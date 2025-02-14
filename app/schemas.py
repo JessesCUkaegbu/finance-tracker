@@ -22,14 +22,15 @@ class Token(BaseModel):
 
 # Transaction Schemas
 class TransactionCreate(BaseModel):
+    title: str
     amount: float
-    description: Optional[str] = None
+    type: str
+    description: str
+    date: datetime  
 
-class TransactionOut(BaseModel):
+class TransactionOut(TransactionCreate):
     id: int
-    amount: float
-    description: Optional[str]
-    date: datetime
+    user_id: int
 
     class Config:
         orm_mode = True

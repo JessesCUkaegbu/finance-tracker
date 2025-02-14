@@ -12,7 +12,7 @@ class User(Base):
     hashed_password = Column(String)
     
     
-    transactions = relationship("Transaction", back_populates="owner")
+    transactions = relationship("Transaction", back_populates="user")
     
 
 class Transaction(Base):
@@ -22,6 +22,8 @@ class Transaction(Base):
     title = Column(String)
     amount = Column(Float)
     type = Column(String)  # 'income' or 'expense'
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    description = Column(String, nullable=True)  
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
-    owner = relationship("User", back_populates="transactions")
+
+    user = relationship("User", back_populates="transactions")
