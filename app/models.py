@@ -14,6 +14,7 @@ class User(Base):
     
     
     transactions = relationship("Transaction", back_populates="user")
+    budgets = relationship("Budget", back_populates="user")
     
 
 class Transaction(Base):
@@ -28,3 +29,15 @@ class Transaction(Base):
     date = Column(DateTime, default=datetime.utcnow)  # ✅ Ensure this field exists
 
     user = relationship("User", back_populates="transactions")
+
+
+class Budget(Base):
+    __tablename__ = "budgets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    category = Column(String, nullable=False)
+    amount = Column(Float, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="budgets")

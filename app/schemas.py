@@ -37,3 +37,19 @@ class TransactionOut(TransactionCreate):
 
     class Config:
         orm_mode = True
+
+# Budget Schemas
+class BudgetBase(BaseModel):
+    category: str
+    amount: float
+
+class BudgetCreate(BudgetBase):
+    pass
+
+class Budget(BudgetBase):
+    id: int
+    user_id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True 

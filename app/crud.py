@@ -29,3 +29,36 @@ def get_transactions(db: Session, user_id: int):
     return db.query(models.Transaction).filter(models.Transaction.user_id == user_id).all()
 
 
+# Create Budget
+def create_budget(db: Session, budget: schemas.BudgetCreate, user_id: int):
+    db_budget = models.Budget(**budget.dict(), user_id=user_id)
+    db.add(db_budget)
+    db.commit()
+    db.refresh(db_budget)
+    return db_budget
+
+# Get all budgets for a user
+def get_budgets(db: Session, user_id: int):
+    return db.query(models.Budget).filter(models.Budget.user_id == user_id).all()
+
+# Get a single budget by ID
+def get_budget(db: Session, budget_id: int):
+    return db.query(models.Budget).filter(models.Budget.id == budget_id).first()
+
+# Update a budget
+def update_budget(db: Session, budget_id: int, budget_data: schemas.BudgetCreate):
+    db_budget = db.query(models.Budget).filter(models.Budget.id == budget_id).first()
+    if db_budget:
+        db_budget.category = budget_data.category
+        db_budget.amount = budget_data.amount
+        db.commit()
+        db.refresh(db_budget)
+    return db_budget
+
+# Delete a budget
+def delete_budget(db: Session, budget_id: int):
+    db_budget = db.query(models.Budget).filter(models.Budget.id == budget_id).first()
+    if db_budget:
+        db.delete(db_budget)
+        db.commit()
+    return db_budget
