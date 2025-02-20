@@ -28,6 +28,9 @@ class TransactionCreate(BaseModel):
     description: str
     date: datetime  
 
+class TransactionCreate(TransactionCreate):
+    pass
+
 class TransactionOut(TransactionCreate):
     id: int
     user_id: int

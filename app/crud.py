@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from app import models, schemas
 from passlib.hash import bcrypt
 
+
 # User CRUD
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_password = bcrypt.hash(user.password)
@@ -11,7 +12,7 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
-
+# Get all user by their ID
 def get_user_by_username(db: Session, username: str):
     return db.query(models.User).filter(models.User.username == username).first()
 
@@ -26,3 +27,5 @@ def create_transaction(db: Session, transaction: schemas.TransactionCreate, user
 
 def get_transactions(db: Session, user_id: int):
     return db.query(models.Transaction).filter(models.Transaction.user_id == user_id).all()
+
+

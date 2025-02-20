@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+from datetime import datetime
 from .database import Base
 
 
@@ -24,6 +25,6 @@ class Transaction(Base):
     type = Column(String)  # 'income' or 'expense'
     description = Column(String, nullable=True)  
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-
+    date = Column(DateTime, default=datetime.utcnow)  # ✅ Ensure this field exists
 
     user = relationship("User", back_populates="transactions")
