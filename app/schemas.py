@@ -53,3 +53,9 @@ class Budget(BudgetBase):
 
     class Config:
         orm_mode = True 
+
+class FinancialReportResponse(BaseModel):
+    total_income: float
+    total_expenses: float
+    balance: float
+    transactions_count: int

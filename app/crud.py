@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from app import models, schemas
+from sqlalchemy import func
 from passlib.hash import bcrypt
 
 
@@ -62,3 +63,24 @@ def delete_budget(db: Session, budget_id: int):
         db.delete(db_budget)
         db.commit()
     return db_budget
+
+# Calculation of financial income and expend for report and anaylsis.
+def get_financial_report(db: Session, user_id: int, month: int = None, year: int = None):
+    query = db.query(models.Transaction).filter(models.Transaction.user_id == user_id)
+
+    if month and year:
+        query = query.filter(func.extract('month', models.Transaction.date) == month)
+        query = query.filter(func.extract('year', models.Transaction.date) == year)
+
+    transactions = query.all()
+
+    total_income = sum(t.amount for t in transactions if t.type == "income")
+    total_expenses = sum(t.amount for t in transactions if t.type == "expense")
+    balance = total_income - total_expenses
+
+    return {
+        "total_income": total_income,
+        "total_expenses": total_expenses,
+        "balance": balance,
+        "transactions_count": len(transactions),
+    }
