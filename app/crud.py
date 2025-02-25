@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from app import models, schemas
+from datetime import datetime, timedelta
 from sqlalchemy import func
 from passlib.hash import bcrypt
 
@@ -84,3 +85,35 @@ def get_financial_report(db: Session, user_id: int, month: int = None, year: int
         "balance": balance,
         "transactions_count": len(transactions),
     }
+
+def get_notifications(db: Session, user_id: int):
+    """Generate notifications based on financial data."""
+    
+    # Fetch all transactions for the last 30 days
+    last_month = datetime.utcnow() - timedelta(days=30)
+    transactions = db.query(models.Transaction).filter(
+        models.Transaction.user_id == user_id,
+        models.Transaction.date >= last_month
+    ).all()
+
+    # Calculate income and expenses
+    total_income = sum(t.amount for t in transactions if t.type == "income")
+    total_expenses = sum(t.amount for t in transactions if t.type == "expense")
+    balance = total_income - total_expenses
+
+    notifications = []
+
+    # Low balance warning
+    if balance < 100:  # You can set a custom threshold
+        notifications.append({"message": "⚠️ Your balance is low. Consider reviewing your expenses!"})
+
+    # High spending alert
+    if total_expenses > (total_income * 0.7):  # Spending more than 70% of income
+        notifications.append({"message": "🚨 High spending detected! You’ve used over 70% of your income."})
+
+    # Monthly summary
+    notifications.append({
+        "message": f"📊 Monthly Summary: Income: ${total_income}, Expenses: ${total_expenses}, Balance: ${balance}"
+    })
+
+    return notifications

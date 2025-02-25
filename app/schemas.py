@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from typing import List
 
 # User Schemas
 class UserCreate(BaseModel):
@@ -59,3 +60,9 @@ class FinancialReportResponse(BaseModel):
     total_expenses: float
     balance: float
     transactions_count: int
+
+class Notification(BaseModel):
+    message: str
+
+class NotificationsResponse(BaseModel):
+    notifications: List[Notification]

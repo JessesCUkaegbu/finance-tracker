@@ -2,7 +2,7 @@ from typing import Union
 from fastapi import FastAPI
 from .database import engine
 from . import models
-from app.routers import users, transactions, budgets, reports
+from app.routers import users, transactions, budgets, reports, notifications
 import uvicorn
 from app.auth import auth
 
@@ -21,6 +21,7 @@ app.include_router(users.router, prefix="/api")
 app.include_router(transactions.router, prefix="/api")
 app.include_router(budgets.router) 
 app.include_router(reports.router) 
+app.include_router(notifications.router)
 
 @app.get("/")
 def read_root():
